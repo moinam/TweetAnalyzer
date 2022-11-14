@@ -1,0 +1,33 @@
+#IchBinHanna
+#IchBinReyhan
+#IchBinJelena
+#IchBinMelek
+#IchBinHannaCH
+#IchBinHannaAT
+#IchBinHannaInUK
+#IchWarHanna
+#HannasChef
+#WissZeitVG
+#95vsWissTeitVG
+#GegenWissZeitVG10
+#ACertainDegreeofFlexibility
+#WissSystemFehler
+#FristIsFrust
+#Dauerstellen
+#AcademicPrecarity
+#stopprecarity
+
+
+june 21, 2021 - 31 october 2022
+
+tweepy-api
+
+1st milestone:
+1. to get the data
+2. problem and solution
+3. Initial EDA
+4. literature survey: short text
+5. relationship between hashtags
+
+user grop: phd, post-doc, junior prof, prof, other
+
