@@ -93,12 +93,28 @@ OR "#FristIsFrust" OR "#Dauerstellen" OR "#AcademicPrecarity" OR "#stopprecarity
 
 
 def fetch_query(query, next_token=None):
-    if (next_token):
-        return client.search_all_tweets(query=query, start_time=start_time, end_time=end_time,
-                                        expansions=expansions, tweet_fields=tweet_fields, max_results=500, next_token=next_token)
-    else:
-        return client.search_all_tweets(query=query, start_time=start_time, end_time=end_time,
-                                        expansions=expansions, tweet_fields=tweet_fields, max_results=500)
+    tweets = None
+    res = True
+    while (res):
+        try:
+            time.sleep(1)
+            if (next_token):
+                tweets = client.search_all_tweets(query=query, start_time=start_time, end_time=end_time,
+                                                  expansions=expansions, tweet_fields=tweet_fields, max_results=500, next_token=next_token)
+            else:
+                tweets = client.search_all_tweets(query=query, start_time=start_time, end_time=end_time,
+                                                  expansions=expansions, tweet_fields=tweet_fields, max_results=500)
+            res = False
+        except Exception as e:
+            if e.response.status_code == 429:
+                temp_time = datetime.now().strftime("%c")
+                print(
+                f" Rate Limit Exhausted, Sleeping for 500 seconds. Timestamp:{temp_time}")
+                time.sleep(500)
+            else:
+                print(f"Exception: {e}, Retry...")
+
+    return tweets
 
 
 def extract_data():
@@ -106,18 +122,7 @@ def extract_data():
     cur_auth_batch = 0
     for id in range(0, len(authors), 20):
         spec_query = magic_query_maker(authors=authors[id:id+20])
-        try:
-            time.sleep(1)
-            init_tweets = fetch_query(spec_query)
-        except Exception as e:
-            temp_time = datetime.now().strftime("%c")
-            print(
-                f" Rate Limit Exhausted, Sleeping for 500 seconds. Timestamp:{temp_time}")
-            time.sleep(500)
-            try:
-                init_tweets = fetch_query(spec_query)
-            except Exception as e:
-                init_tweets = fetch_query(spec_query)
+        init_tweets = fetch_query(spec_query)
         requests += 1
         cur_auth_batch += 1
         try:
@@ -125,20 +130,7 @@ def extract_data():
             try:
                 next_token = init_tweets.meta['next_token']
                 while (next_token):
-                    try:
-                        time.sleep(1)
-                        tweets = fetch_query(spec_query, next_token=next_token)
-                    except Exception as e:
-                        temp_time = datetime.now().strftime("%c")
-                        print(
-                            f" Rate Limit Exhausted, Sleeping for 500 seconds. Timestamp:{temp_time}")
-                        time.sleep(500)
-                        try:
-                            tweets = fetch_query(
-                                spec_query, next_token=next_token)
-                        except Exception as e:
-                            tweets = fetch_query(
-                                spec_query, next_token=next_token)
+                    tweets = fetch_query(spec_query, next_token=next_token)
                     requests += 1
                     try:
                         next_token = tweets.meta['next_token']
