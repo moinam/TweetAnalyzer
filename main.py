@@ -104,8 +104,8 @@ def fetch_query(query, next_token=None):
 def extract_data():
     requests = 0
     cur_auth_batch = 0
-    for id in range(0, len(authors), 25):
-        spec_query = magic_query_maker(authors=authors[id:id+25])
+    for id in range(0, len(authors), 20):
+        spec_query = magic_query_maker(authors=authors[id:id+20])
         try:
             time.sleep(1)
             init_tweets = fetch_query(spec_query)
