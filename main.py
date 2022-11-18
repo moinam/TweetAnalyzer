@@ -110,9 +110,9 @@ def extract_data():
             time.sleep(1)
             init_tweets = fetch_query(spec_query)
         except Exception as e:
-            temp_time = datetime.now().strftime("% H: % M: % S")
+            temp_time = datetime.now().strftime("%c")
             print(
-                f" Rate Limit Exhausted, Sleeping for 900 seconds. Timestamp:{temp_time}")
+                f" Rate Limit Exhausted, Sleeping for 500 seconds. Timestamp:{temp_time}")
             time.sleep(500)
             try:
                 init_tweets = fetch_query(spec_query)
@@ -129,9 +129,9 @@ def extract_data():
                         time.sleep(1)
                         tweets = fetch_query(spec_query, next_token=next_token)
                     except Exception as e:
-                        temp_time = datetime.now().strftime("% H: % M: % S")
+                        temp_time = datetime.now().strftime("%c")
                         print(
-                            f" Rate Limit Exhausted, Sleeping for 900 seconds. Timestamp:{temp_time}")
+                            f" Rate Limit Exhausted, Sleeping for 500 seconds. Timestamp:{temp_time}")
                         time.sleep(500)
                         try:
                             tweets = fetch_query(
