@@ -14,7 +14,7 @@ client = tweepy.Client(
 
 """ Query Config"""
 start_time = '2021-06-21T00:00:00Z'
-end_time = '2022-10-31T00:00:00Z'
+end_time = '2022-11-01T00:00:00Z'
 expansions = ['author_id', 'referenced_tweets.id']
 tweet_fields = ['created_at', 'public_metrics', 'conversation_id', 'entities']
 twitter_query_data = pd.read_csv('twitter_data.csv')
