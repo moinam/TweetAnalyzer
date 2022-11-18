@@ -94,8 +94,12 @@ def extract_data():
     requests = 0
     for id in range(0, len(authors), 25):
         spec_query = magic_query_maker(authors=authors[id:id+25])
-        init_tweets = client.search_all_tweets(
-            query=spec_query, start_time=start_time, end_time=end_time, expansions=expansions, tweet_fields=tweet_fields, max_results=500)
+        try:
+            init_tweets = client.search_all_tweets(
+                query=spec_query, start_time=start_time, end_time=end_time, expansions=expansions, tweet_fields=tweet_fields, max_results=500)
+        except:
+            init_tweets = client.search_all_tweets(
+                query=spec_query, start_time=start_time, end_time=end_time, expansions=expansions, tweet_fields=tweet_fields, max_results=500)
         requests += 1
         print(
             f"Update:, No. of requests to Twitter: {requests}  No. of Tweets Extracted:{len(tweetsSet)}")
@@ -104,8 +108,12 @@ def extract_data():
             try:
                 next_token = init_tweets.meta['next_token']
                 while (next_token):
-                    tweets = client.search_all_tweets(query=spec_query, start_time=start_time, end_time=end_time,
-                                                      expansions=expansions, tweet_fields=tweet_fields, max_results=500, next_token=next_token)
+                    try:
+                        tweets = client.search_all_tweets(query=spec_query, start_time=start_time, end_time=end_time,
+                                                          expansions=expansions, tweet_fields=tweet_fields, max_results=500, next_token=next_token)
+                    except:
+                        tweets = client.search_all_tweets(query=spec_query, start_time=start_time, end_time=end_time,
+                                                          expansions=expansions, tweet_fields=tweet_fields, max_results=500, next_token=next_token)
                     requests += 1
                     try:
                         next_token = tweets.meta['next_token']
@@ -116,6 +124,7 @@ def extract_data():
                 next_token = None
         except Exception as e:
             print("Exception: ", e)
+
 
 print("################### Let the Twitter Games Begin ####################")
 extract_data()
