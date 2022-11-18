@@ -1,13 +1,15 @@
 from auth_config import TWITTER_CONFIG
 import tweepy
 import pandas as pd
+import time
+from datetime import datetime
 
 """ Tweepy Client Configuration - START"""
 bearer_token = TWITTER_CONFIG['bearer_token']
 access_token = TWITTER_CONFIG['access_token']
 access_token_secret = TWITTER_CONFIG['access_token_secret']
 client = tweepy.Client(
-    bearer_token=bearer_token, access_token=access_token, access_token_secret=access_token_secret, wait_on_rate_limit=True)
+    bearer_token=bearer_token, access_token=access_token, access_token_secret=access_token_secret)
 """ Tweepy Client Configuration - END"""
 
 """ Query Config"""
@@ -90,30 +92,53 @@ OR "#FristIsFrust" OR "#Dauerstellen" OR "#AcademicPrecarity" OR "#stopprecarity
     return spec_query
 
 
+def fetch_query(query, next_token=None):
+    if (next_token):
+        return client.search_all_tweets(query=query, start_time=start_time, end_time=end_time,
+                                        expansions=expansions, tweet_fields=tweet_fields, max_results=500, next_token=next_token)
+    else:
+        return client.search_all_tweets(query=query, start_time=start_time, end_time=end_time,
+                                        expansions=expansions, tweet_fields=tweet_fields, max_results=500)
+
+
 def extract_data():
     requests = 0
+    cur_auth_batch = 0
     for id in range(0, len(authors), 25):
         spec_query = magic_query_maker(authors=authors[id:id+25])
         try:
-            init_tweets = client.search_all_tweets(
-                query=spec_query, start_time=start_time, end_time=end_time, expansions=expansions, tweet_fields=tweet_fields, max_results=500)
-        except:
-            init_tweets = client.search_all_tweets(
-                query=spec_query, start_time=start_time, end_time=end_time, expansions=expansions, tweet_fields=tweet_fields, max_results=500)
+            time.sleep(1)
+            init_tweets = fetch_query(spec_query)
+        except Exception as e:
+            temp_time = datetime.now().strftime("% H: % M: % S")
+            print(
+                f" Rate Limit Exhausted, Sleeping for 900 seconds. Timestamp:{temp_time}")
+            time.sleep(500)
+            try:
+                init_tweets = fetch_query(spec_query)
+            except Exception as e:
+                init_tweets = fetch_query(spec_query)
         requests += 1
-        print(
-            f"Update:, No. of requests to Twitter: {requests}  No. of Tweets Extracted:{len(tweetsSet)}")
+        cur_auth_batch += 1
         try:
             append_tweets(tweets=init_tweets)
             try:
                 next_token = init_tweets.meta['next_token']
                 while (next_token):
                     try:
-                        tweets = client.search_all_tweets(query=spec_query, start_time=start_time, end_time=end_time,
-                                                          expansions=expansions, tweet_fields=tweet_fields, max_results=500, next_token=next_token)
-                    except:
-                        tweets = client.search_all_tweets(query=spec_query, start_time=start_time, end_time=end_time,
-                                                          expansions=expansions, tweet_fields=tweet_fields, max_results=500, next_token=next_token)
+                        time.sleep(1)
+                        tweets = fetch_query(spec_query, next_token=next_token)
+                    except Exception as e:
+                        temp_time = datetime.now().strftime("% H: % M: % S")
+                        print(
+                            f" Rate Limit Exhausted, Sleeping for 900 seconds. Timestamp:{temp_time}")
+                        time.sleep(500)
+                        try:
+                            tweets = fetch_query(
+                                spec_query, next_token=next_token)
+                        except Exception as e:
+                            tweets = fetch_query(
+                                spec_query, next_token=next_token)
                     requests += 1
                     try:
                         next_token = tweets.meta['next_token']
@@ -123,7 +148,10 @@ def extract_data():
             except:
                 next_token = None
         except Exception as e:
-            print("Exception: ", e)
+            print(
+                "No Tweets found[likely to be the case] and the Exception: ", e)
+        print(
+            f"Auth Batch: {cur_auth_batch}: No. of requests to Twitter: {requests}  Tweets Extracted:{len(tweetsSet)}")
 
 
 print("################### Let the Twitter Games Begin ####################")
