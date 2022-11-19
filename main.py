@@ -106,14 +106,17 @@ def fetch_query(query, next_token=None):
                                                   expansions=expansions, tweet_fields=tweet_fields, max_results=500)
             res = False
         except Exception as e:
-            if e.response.status_code == 429:
-                temp_time = datetime.now().strftime("%c")
-                print(
-                f" Rate Limit Exhausted, Sleeping for 500 seconds. Timestamp:{temp_time}")
-                time.sleep(500)
-            else:
+            try:
+                if e.response.status_code == 429:
+                    temp_time = datetime.now().strftime("%c")
+                    print(
+                    f" Rate Limit Exhausted, Sleeping for 500 seconds. Timestamp:{temp_time}")
+                    time.sleep(500)
+                else:
+                    print(f"Exception: {e}, Retry...")
+            except:
                 print(f"Exception: {e}, Retry...")
-
+                
     return tweets
 
 
