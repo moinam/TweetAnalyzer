@@ -1,0 +1,20 @@
+Saijal suggestion: 
+on hashtag:-
+1. preprocess hashtag
+- dictionary of words
+- try camel case
+- check for raw hashtags 
+- window to form dictionary
+- check bert for hashtag
+- hashtag tagspace
+
+text 
+- add english stopwords
+- remove english tweets
+- remove punctuations
+- bilingual LDA for english and german
+- identif number of topics
+- model selection
+- AIC/BIC
+- log likelihoods
+- CV
