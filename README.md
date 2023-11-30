@@ -16,11 +16,11 @@ We performed a trend analysis on the tweets by performing a hashtag analysis and
 
 ## The scripts overview:
 
-- ``create_dataset.py`` : This python script is responsible for fetching tweets from the Twitter API. ``auth_config.py`` contains the API credentials of the Twitter developer account. Ypu will need to add your credentials here for it to start working out of the box.
+- ``create_dataset.py`` : This python script is responsible for fetching tweets from the Twitter API. ``auth_config.py`` contains the API credentials of the Twitter developer account. You will need to add your credentials here for it to start working out of the box.
 
 - ``Text_Analysis_Visualize.ipynb`` & ``Trend_Evaluation_Hashtag Analysis_Graphs.ipynb`` : This notebook creates visualizations from the tweets gathered from the Twitter API.
 
-- ``Tweet_Analysis_Pipeline.ipynb`` , ``workflow_Clustering_hashtags.ipynb`` & ``TopicModelling.ipynb`` : This notrbook contains all the pipeline functions to carry down the tweet analysis before they can be visualized.
+- ``Tweet_Analysis_Pipeline.ipynb`` , ``workflow_Clustering_hashtags.ipynb`` & ``TopicModelling.ipynb`` : This notebook contains all the pipeline functions to carry down the tweet analysis before they can be visualized.
 
 ## Full System Architecture
 ![Alt text](graphs/Full%20Arch.PNG)
