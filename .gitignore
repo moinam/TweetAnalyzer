@@ -3,3 +3,4 @@ __pycache__/auth_config.cpython-310.pyc
 .vscode/launch.json
 BERTopic_Roberta_50
 BERTopic_50
+data/
